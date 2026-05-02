@@ -5,24 +5,33 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRC_DIR = src
 INC_DIR = inc
+LIBFT_DIR = libft
 
 SRCS = $(SRC_DIR)/main.c
 OBJS = $(SRCS:.c=.o)
 
-INCS = -I$(INC_DIR)
+LIBFT = $(LIBFT_DIR)/libft.a
 
-all: $(NAME)
+INCS = -I$(INC_DIR) -I$(LIBFT_DIR)
+LIBS = -L$(LIBFT_DIR) -lft
 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+all: $(LIBFT) $(NAME)
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
+
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCS) -c $< -o $@
 
 clean:
+	$(MAKE) -C $(LIBFT_DIR) clean
 	rm -f $(OBJS)
 
 fclean: clean
+	$(MAKE) -C $(LIBFT_DIR) fclean
 	rm -f $(NAME)
 
 re: fclean all

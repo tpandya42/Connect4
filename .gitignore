@@ -2,3 +2,4 @@
 connect4
 .DS_Store
 compile_commands.json
+.cache
