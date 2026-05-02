@@ -20,7 +20,6 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include "gnl/get_next_line.h"
-# include "../include/colors.h"
 
 //-------------------------//
 //         STRUCTS         //
