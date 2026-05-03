@@ -4,51 +4,54 @@
 void display_welcome(void)
 {
 	ft_printf("\n");
-	ft_printf("╔════════════════════════════════════════╗\n");
-	ft_printf("║          Welcome to Connect 4!         ║\n");
-	ft_printf("╚════════════════════════════════════════╝\n");
-	ft_printf("\nPlayer (●) vs AI (○)\n");
+	ft_printf("========================================\n");
+	ft_printf("          Welcome to Connect 4!         \n");
+	ft_printf("========================================\n");
+	ft_printf("\nPlayer (X) vs AI (O)\n");
 	ft_printf("Drop your pawn by choosing a column!\n\n");
 }
 
 void display_board(t_game game)
 {
+	int row;
+	int col;
+
 	ft_printf("\n");
 
 	if (game.cols > MAX_DISPLAY_COLS || game.rows > MAX_DISPLAY_ROWS)
 	{
 		ft_printf("Board is too large to display. Columns: %d, Rows: %d\n", game.cols, game.rows);
 		ft_printf("Column numbers: ");
-		for (int col = 0; col < game.cols; col++)
+		for (col = 0; col < game.cols; col++)
 			ft_printf("%d ", col % 10);
 		ft_printf("\n");
 		return ;
 	}
 
-	for (int col = 0; col < game.cols; col++)
+	for (col = 0; col < game.cols; col++)
 		ft_printf(" %d ", col);
 	ft_printf("\n");
 
-	for (int col = 0; col < game.cols; col++)
-		ft_printf("───");
+	for (col = 0; col < game.cols; col++)
+		ft_printf("---");
 	ft_printf("\n");
 
-	for (int row = 0; row < game.rows; row++)
+	for (row = 0; row < game.rows; row++)
 	{
-		for (int col = 0; col < game.cols; col++)
+		for (col = 0; col < game.cols; col++)
 		{
 			if (game.board[row][col] == PLAYER)
-				ft_printf("│●");
+				ft_printf("|X");
 			else if (game.board[row][col] == AI)
-				ft_printf("│○");
+				ft_printf("|O");
 			else
-				ft_printf("│ ");
+				ft_printf("| ");
 		}
-		ft_printf("│\n");
+		ft_printf("|\n");
 	}
 
-	for (int col = 0; col < game.cols; col++)
-		ft_printf("───");
+	for (col = 0; col < game.cols; col++)
+		ft_printf("---");
 	ft_printf("\n\n");
 }
 
@@ -83,12 +86,14 @@ int get_player_input(t_game game)
 
 void display_game_end(t_game game, int winner)
 {
-	ft_printf("\n╔════════════════════════════════════════╗\n");
+	(void)game;
+
+	ft_printf("\n========================================\n");
 	if (winner == PLAYER)
-		ft_printf("║            🎉 You Won! 🎉            ║\n");
+		ft_printf("               You Won!                 \n");
 	else if (winner == AI)
-		ft_printf("║         AI Won! Better luck next!     ║\n");
+		ft_printf("         AI Won! Better luck next!      \n");
 	else if (winner == 0)
-		ft_printf("║              It's a Draw!             ║\n");
-	ft_printf("╚════════════════════════════════════════╝\n\n");
+		ft_printf("              It's a Draw!              \n");
+	ft_printf("========================================\n\n");
 }

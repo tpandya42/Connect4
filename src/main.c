@@ -35,6 +35,7 @@ int init_game(t_game *game, int argc, char **argv)
 	int cols;
 	int i;
 	int j;
+	int mode;
 	int **board;
 
 	if (argc < 3 || argc > 4)
@@ -53,7 +54,7 @@ int init_game(t_game *game, int argc, char **argv)
 	game->mode = MODE_TERMINAL;
 	if (argc == 4)
 	{
-		int mode = ft_atoi(argv[3]);
+		mode = ft_atoi(argv[3]);
 		if (mode == 1)
 			game->mode = MODE_GUI;
 		else if (mode != 0)
@@ -123,14 +124,13 @@ static void game_loop(t_game *game)
 		else
 		{
 			ft_printf("AI is thinking...\n");
-			col = ai_play(game);
-			if (col == -1)
+			row = ai_play(game, &col);
+			if (row == -1)
 			{
 				ft_printf("Error: AI failed to play.\n");
 				game->is_running = 0;
 				break ;
 			}
-			row = can_drop_pawn(*game, col);
 		}
 
 		if (check_win(*game, col, row))
@@ -150,6 +150,7 @@ static void game_loop(t_game *game)
 			game->turn = (game->turn == PLAYER) ? AI : PLAYER;
 		}
 	}
+
 }
 
 int main(int argc, char **argv)
@@ -166,46 +167,4 @@ int main(int argc, char **argv)
 
 	free_board(game);
 	return (0);
-}
-
-				// get player input again
-				y = can_drop_pawn(game, x);
-			}
-			game.board[y][x] = game.turn;
-
-			if (check_win(game, x, y)) {
-				ft_printf("Congralutions, you won!\n");
-				game.is_running = 0;
-			}
-			// player
-		} else {
-			// ai
-		}
-		// print board
-		//
-		//
-		// if game.turn is for player 1 then do the thingy
-		//
-		//
-		//
-		// if turn is for ai then let ai do its thingy
-		//
-		//
-		// check for winning condition 
-		//
-		//
-		// switch turn and repeat.......
-		if (full_board(game)) {
-			ft_printf("It's a tie!\n");
-			game.is_running = 0;
-		}	
-		game.turn = (game.turn % 2) + 1;
-	}
-
-	// cleanup 
-	//
-	//
-	// free game and exit
-	free_board(game);
-    return (0);
 }

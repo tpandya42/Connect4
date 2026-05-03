@@ -49,7 +49,7 @@ int		check_win(t_game game, int col, int row);
 int		full_board(t_game game);
 
 /* AI logic */
-int		ai_play(t_game *game);
+int		ai_play(t_game *game, int *col_out);
 int		minimax(t_game *game, int depth, int is_maximizing, int *best_col, int alpha, int beta);
 int		evaluate_board(t_game game);
 

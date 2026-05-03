@@ -20,12 +20,16 @@ static int score_position(int **board, int rows, int cols, int row, int col, int
 {
 	int score = 0;
 	int directions[4][2] = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
+	int i;
+	int align1;
+	int align2;
+	int total;
 
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 	{
-		int align1 = count_align(board, rows, cols, row, col, player, directions[i][0], directions[i][1]);
-		int align2 = count_align(board, rows, cols, row, col, player, -directions[i][0], -directions[i][1]);
-		int total = align1 + align2 + 1;
+		align1 = count_align(board, rows, cols, row, col, player, directions[i][0], directions[i][1]);
+		align2 = count_align(board, rows, cols, row, col, player, -directions[i][0], -directions[i][1]);
+		total = align1 + align2 + 1;
 
 		if (total >= 4)
 			score += 50000;
@@ -42,10 +46,12 @@ int evaluate_board(t_game game)
 	int score = 0;
 	int ai_score = 0;
 	int player_score = 0;
+	int row;
+	int col;
 
-	for (int row = 0; row < game.rows; row++)
+	for (row = 0; row < game.rows; row++)
 	{
-		for (int col = 0; col < game.cols; col++)
+		for (col = 0; col < game.cols; col++)
 		{
 			if (game.board[row][col] == AI)
 				ai_score += score_position(game.board, game.rows, game.cols, row, col, AI);
@@ -59,10 +65,16 @@ int evaluate_board(t_game game)
 
 int minimax(t_game *game, int depth, int is_maximizing, int *best_col, int alpha, int beta)
 {
-	int col_valid[game->cols];
+	int col_valid[MAX_COLS];
 	int valid_moves = 0;
+	int col;
+	int i;
+	int row;
+	int eval;
+	int max_eval;
+	int min_eval;
 
-	for (int col = 0; col < game->cols; col++)
+	for (col = 0; col < game->cols; col++)
 	{
 		if (can_drop_pawn(*game, col) != -1)
 		{
@@ -76,12 +88,12 @@ int minimax(t_game *game, int depth, int is_maximizing, int *best_col, int alpha
 
 	if (is_maximizing)
 	{
-		int max_eval = INT_MIN;
-		for (int i = 0; i < valid_moves; i++)
+		max_eval = INT_MIN;
+		for (i = 0; i < valid_moves; i++)
 		{
-			int col = col_valid[i];
-			int row = drop_pawn(game, col, AI);
-			int eval = minimax(game, depth - 1, 0, best_col, alpha, beta);
+			col = col_valid[i];
+			row = drop_pawn(game, col, AI);
+			eval = minimax(game, depth - 1, 0, NULL, alpha, beta);
 
 			game->board[row][col] = EMPTY;
 			if (eval > max_eval)
@@ -98,12 +110,12 @@ int minimax(t_game *game, int depth, int is_maximizing, int *best_col, int alpha
 	}
 	else
 	{
-		int min_eval = INT_MAX;
-		for (int i = 0; i < valid_moves; i++)
+		min_eval = INT_MAX;
+		for (i = 0; i < valid_moves; i++)
 		{
-			int col = col_valid[i];
-			int row = drop_pawn(game, col, PLAYER);
-			int eval = minimax(game, depth - 1, 1, best_col, alpha, beta);
+			col = col_valid[i];
+			row = drop_pawn(game, col, PLAYER);
+			eval = minimax(game, depth - 1, 1, NULL, alpha, beta);
 
 			game->board[row][col] = EMPTY;
 			if (eval < min_eval)
@@ -116,10 +128,12 @@ int minimax(t_game *game, int depth, int is_maximizing, int *best_col, int alpha
 	}
 }
 
-int ai_play(t_game *game)
+int ai_play(t_game *game, int *col_out)
 {
 	int best_col = -1;
 	int depth = 6;
+	int col;
+	int row;
 
 	if (game->rows > 10 || game->cols > 10)
 		depth = 4;
@@ -130,7 +144,7 @@ int ai_play(t_game *game)
 
 	if (best_col == -1)
 	{
-		for (int col = 0; col < game->cols; col++)
+		for (col = 0; col < game->cols; col++)
 		{
 			if (can_drop_pawn(*game, col) != -1)
 			{
@@ -142,8 +156,12 @@ int ai_play(t_game *game)
 
 	if (best_col != -1)
 	{
-		drop_pawn(game, best_col, AI);
-		return (best_col);
+		row = drop_pawn(game, best_col, AI);
+		if (row == -1)
+			return (-1);
+		if (col_out != NULL)
+			*col_out = best_col;
+		return (row);
 	}
 	return (-1);
 }
