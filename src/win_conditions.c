@@ -1,74 +1,112 @@
 #include "connect4.h"
 
-static int check_vertical(t_game game, int p, int x, int y) {
-    int **board = game.board;
+static int check_vertical(t_game game, int player, int col, int row)
+{
+	int **board = game.board;
 
-    for (int r = y - 3; r <= y; r++) {
-        if (r >= game.rows - 3)
-            break;
-        if (r < 0)
-            continue;
+	for (int r = row - 3; r <= row; r++)
+	{
+		if (r < 0 || r + 3 >= game.rows)
+			continue ;
 
-        if (board[r][x] == p && board[r+1][x] == p && board[r+2][x] == p && board[r+3][x] == p)
-            return 1;
-    }
+		if (board[r][col] == player && board[r + 1][col] == player
+			&& board[r + 2][col] == player && board[r + 3][col] == player)
+			return (1);
+	}
 
-    return 0;
+	return (0);
 }
 
-static int check_horizontal(t_game game, int p, int x, int y) {
-    int **board = game.board;
+static int check_horizontal(t_game game, int player, int col, int row)
+{
+	int **board = game.board;
 
-    for (int c = x - 3; c <= x; c++) {
-        if (c >= game.cols - 3)
-            break;
-        if (c < 0)
-            continue;
+	for (int c = col - 3; c <= col; c++)
+	{
+		if (c < 0 || c + 3 >= game.cols)
+			continue ;
 
-        if (board[y][c] == p && board[y][c + 1] == p && board[y][c + 2] == p && board[y][c + 3] == p)
-            return 1;
-    }
+		if (board[row][c] == player && board[row][c + 1] == player
+			&& board[row][c + 2] == player && board[row][c + 3] == player)
+			return (1);
+	}
 
-    return 0;
+	return (0);
 }
 
-static int check_diagonals(t_game game, int p, int x, int y) {
-    int **board = game.board;
+static int check_diagonals(t_game game, int player, int col, int row)
+{
+	int **board = game.board;
 
-    for (int i = -3; i <= 0; i++) {
-        if (x + i >= 0 && y + i >= 0 && x + i + 3 < game.cols && y + i + 3 < game.rows) {
-            if (board[y+i][x+i] == p && board[y+i+1][x+i+1] == p && board[y+i+2][x+i+2] == p && board[y+i+3][x+i+3] == p)
-                return 1;
-        }
+	for (int i = -3; i <= 0; i++)
+	{
+		if (col + i >= 0 && row + i >= 0 && col + i + 3 < game.cols && row + i + 3 < game.rows)
+		{
+			if (board[row + i][col + i] == player && board[row + i + 1][col + i + 1] == player
+				&& board[row + i + 2][col + i + 2] == player && board[row + i + 3][col + i + 3] == player)
+				return (1);
+		}
 
-        if (x - i < game.cols && y + i >= 0 && x - i - 3 >= 0 && y + i + 3 < game.rows) {
-            if (board[y+i][x-i] == p && board[y+i+1][x-i-1] == p && board[y+i+2][x-i-2] == p && board[y+i+3][x-i-3] == p)
-                return 1;
-        }
-    }
+		if (col - i < game.cols && row + i >= 0 && col - i - 3 >= 0 && row + i + 3 < game.rows)
+		{
+			if (board[row + i][col - i] == player && board[row + i + 1][col - i - 1] == player
+				&& board[row + i + 2][col - i - 2] == player && board[row + i + 3][col - i - 3] == player)
+				return (1);
+		}
+	}
 
-    return 0;
+	return (0);
 }
 
-int check_win(t_game game, int x, int y) {
-    int position = game.board[y][x];
-    if (check_vertical(game, position, x, y) == 1)
-        return 1;
-    if (check_horizontal(game, position, x, y) == 1)
-        return 1;
-    if (check_diagonals(game, position, x, y) == 1)
-        return 1;
-    return 0;
+int check_win(t_game game, int col, int row)
+{
+	int player = game.board[row][col];
+
+	if (check_vertical(game, player, col, row) == 1)
+		return (1);
+	if (check_horizontal(game, player, col, row) == 1)
+		return (1);
+	if (check_diagonals(game, player, col, row) == 1)
+		return (1);
+	return (0);
 }
 
-int full_board(t_game game) {
-    for (int x = 0; x < game.rows; x++) {
-        for (int y = 0; y < game.cols; y++) {
-            if (game.board[x][y] == 0) {
-                return 0;
-            }
-        }
-    }
+int full_board(t_game game)
+{
+	for (int row = 0; row < game.rows; row++)
+	{
+		for (int col = 0; col < game.cols; col++)
+		{
+			if (game.board[row][col] == EMPTY)
+				return (0);
+		}
+	}
 
-    return 1;
+	return (1);
 }
+
+int can_drop_pawn(t_game game, int col)
+{
+	if (col < 0 || col >= game.cols)
+		return (-1);
+
+	for (int row = game.rows - 1; row >= 0; row--)
+	{
+		if (game.board[row][col] == EMPTY)
+			return (row);
+	}
+
+	return (-1);
+}
+
+int drop_pawn(t_game *game, int col, int player)
+{
+	int row = can_drop_pawn(*game, col);
+
+	if (row == -1)
+		return (-1);
+
+	game->board[row][col] = player;
+	return (row);
+}
+

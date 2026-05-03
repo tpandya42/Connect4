@@ -7,7 +7,7 @@ SRC_DIR = src
 INC_DIR = inc
 LIBFT_DIR = libft
 
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/win_conditions.c
+SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/win_conditions.c $(SRC_DIR)/ai.c $(SRC_DIR)/game_utils.c
 OBJS = $(SRCS:.c=.o)
 
 LIBFT = $(LIBFT_DIR)/libft.a
