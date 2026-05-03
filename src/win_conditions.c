@@ -4,7 +4,7 @@ static int check_vertical(t_game game, int p, int x, int y) {
     int **board = game.board;
 
     for (int r = y - 3; r <= y; r++) {
-        if (r >= game.cols - 3)
+        if (r >= game.rows - 3)
             break;
         if (r < 0)
             continue;
@@ -36,15 +36,15 @@ static int check_diagonals(t_game game, int p, int x, int y) {
     int **board = game.board;
 
     for (int i = -3; i <= 0; i++) {
-        if (x - i >= game.cols || y - i >= game.rows)
-            continue;
-        if (x + i < 0 || y + i < 0)
-            continue;
+        if (x + i >= 0 && y + i >= 0 && x + i + 3 < game.cols && y + i + 3 < game.rows) {
+            if (board[y+i][x+i] == p && board[y+i+1][x+i+1] == p && board[y+i+2][x+i+2] == p && board[y+i+3][x+i+3] == p)
+                return 1;
+        }
 
-        if (board[y+i][x+i] == p && board[y+i+1][x+i+1] == p && board[y+i+2][x+i+2] == p && board[y+i+3][x+i+3] == p)
-            return 1;
-        else if (board[y+i][x-i] == p && board[y+i+1][x-i-1] == p && board[y+i+2][x-i-2] == p && board[y+i+3][x-i-3] == p)
-            return 1;
+        if (x - i < game.cols && y + i >= 0 && x - i - 3 >= 0 && y + i + 3 < game.rows) {
+            if (board[y+i][x-i] == p && board[y+i+1][x-i-1] == p && board[y+i+2][x-i-2] == p && board[y+i+3][x-i-3] == p)
+                return 1;
+        }
     }
 
     return 0;

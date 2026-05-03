@@ -90,10 +90,10 @@ int main(int argc, char **argv)
 		return 1;
 
 	game.turn = (rand() % 2) + 1;
-	// 0 for player and 1 for bot ?
+	// 1 for player and 2 for bot ?
 	while (game.is_running)
 	{
-		if (game.turn == 0) {
+		if (game.turn == 1) {
 			// get player input
 			int x = 0; // get real input
 			int y = can_drop_pawn(game, x);
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 
 			if (check_win(game, x, y)) {
 				ft_printf("Congralutions, you won!\n");
-				return 0;
+				game.is_running = 0;
 			}
 			// player
 		} else {
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
 		// switch turn and repeat.......
 		if (full_board(game)) {
 			ft_printf("It's a tie!\n");
-			return 0;
+			game.is_running = 0;
 		}	
 		game.turn = (game.turn % 2) + 1;
 	}
