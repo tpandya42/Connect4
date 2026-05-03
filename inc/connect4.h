@@ -24,4 +24,6 @@ typedef struct s_game {
 
 int 	init_game(t_game *game, int argc, char **argv);
 
+int		check_win(t_game game, int x, int y);
+int		full_board(t_game game);
 #endif
